@@ -48,10 +48,9 @@ def generate(req: GenRequest, request: Request):
         return JSONResponse({"error": "rate_limited"}, status_code=429)
     if not os.environ.get("ANTHROPIC_API_KEY"):
         return JSONResponse({"error": "no_key"}, status_code=500)
-    temperature = min(max(req.temperature, 0.0), 1.0)
     max_tokens = min(max(req.max_tokens, 1), MAX_TOKENS_CAP)
     system = req.system.strip() or "You are a helpful assistant."
-    kwargs = dict(model=MODEL, max_tokens=max_tokens, temperature=temperature,
+    kwargs = dict(model=MODEL, max_tokens=max_tokens,
                   system=system, messages=[{"role": "user", "content": req.prompt}])
     def stream():
         try:
